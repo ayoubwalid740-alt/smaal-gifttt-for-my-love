@@ -11,15 +11,58 @@ body{
     font-family: Arial;
     overflow:hidden;
     text-align:center;
-    background: linear-gradient(45deg,#ffd6e0,#ff9ab3);
+
+    background: linear-gradient(45deg,#ffb6c1,#ff69b4,#ffc0cb);
     background-size:400% 400%;
     animation: bgMove 8s ease infinite;
+
+    position:relative;
+}
+
+/* الطبقة الأولى من القلوب (كثيفة) */
+body::before{
+    content:"💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗";
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    font-size:28px;
+    opacity:0.25;
+    animation: floatUp 12s linear infinite;
+    pointer-events:none;
+}
+
+/* الطبقة الثانية (أبطأ + أكبر) */
+body::after{
+    content:"💕 💖 💗 💕 💖 💗 💕 💖 💗 💕 💖 💗 💕 💖 💗 💕 💖 💗";
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    font-size:40px;
+    opacity:0.15;
+    animation: floatUpSlow 18s linear infinite;
+    pointer-events:none;
 }
 
 @keyframes bgMove{
     0%{background-position:0% 50%}
     50%{background-position:100% 50%}
     100%{background-position:0% 50%}
+}
+
+/* حركة القلوب السريعة */
+@keyframes floatUp{
+    0%{transform:translateY(100%)}
+    100%{transform:translateY(-100%)}
+}
+
+/* حركة القلوب البطيئة */
+@keyframes floatUpSlow{
+    0%{transform:translateY(100%)}
+    100%{transform:translateY(-120%)}
 }
 
 .page{
@@ -30,38 +73,19 @@ body{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    opacity:0;
-    transform:scale(0.95);
-    transition:0.5s ease;
 }
 
 .active{
     display:flex;
-    opacity:1;
-    transform:scale(1);
 }
 
 .box{
     background: rgba(255,255,255,0.3);
     padding:30px;
     border-radius:25px;
-    backdrop-filter: blur(15px);
     color:#ff2e63;
-    box-shadow:0 0 25px rgba(255,0,80,0.3);
     max-height:85vh;
     overflow:auto;
-}
-
-h2{
-    font-size:28px;
-    color:#ff2e63;
-    text-shadow:0 0 10px pink;
-}
-
-p{
-    font-size:18px;
-    color:#ff4d88;
-    line-height:1.7;
 }
 
 button{
@@ -72,135 +96,134 @@ button{
     background:#ff2e63;
     color:white;
     cursor:pointer;
-    transition:0.2s;
 }
 
-button:hover{transform:scale(1.1);}
-button:active{transform:scale(0.95);}
-
-input{
-    padding:10px;
-    border-radius:15px;
-    border:none;
-    margin:10px;
-    text-align:center;
-    background:#ffe6f0;
-    color:#ff2e63;
-}
-
-/* قلوب */
-.heart{
-    position:absolute;
-    bottom:-20px;
-    animation: float 6s linear forwards, spin 5s linear infinite;
-}
-
-@keyframes float{
-    0%{transform:translateY(100vh) scale(0.5);opacity:0;}
-    30%{opacity:1;}
-    100%{transform:translateY(-10vh) scale(1.2);opacity:0;}
-}
-
-@keyframes spin{
-    0%{rotate:0deg;}
-    100%{rotate:360deg;}
+#musicBtn{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:9999;
 }
 </style>
 </head>
 
 <body>
 
-<!-- الصفحة 1 -->
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicBtn" onclick="toggleMusic()">🎵 تشغيل الموسيقى</button>
+
 <div class="page active" id="p1">
     <div class="box">
         <h2>💖 إلى إيمان</h2>
-        <p>أنتِ حياتي وكل شيء جميل فيها ❤️</p>
-        <button onclick="go('p2')">🎬 دخول</button>
+        <button onclick="go('p2')">دخول</button>
     </div>
 </div>
 
-<!-- الصفحة 2 -->
 <div class="page" id="p2">
     <div class="box">
-        <h2 id="msg">💖 أحبك يا إيمان</h2>
-        <button onclick="love()">💞 اضغطي هنا</button>
-        <button onclick="go('p3')">🔐 رسالة سرية</button>
-        <button onclick="go('p5')">🎧 رسالة صوتية</button>
-        <button onclick="go('p1')">⬅ رجوع</button>
+        <h2>💖 أحبك يا إيمان</h2>
+
+        <button onclick="go('p3')">🔐 سر</button>
+        <button onclick="go('p5')">🎧 فويس</button>
+
+        <button onclick="showRomantic()">اضغطي هنا يا روحي 💖</button>
+
+        <p id="romanticText" style="margin-top:15px;font-size:18px;font-weight:bold;color:#ff4d88;"></p>
+
+        <button onclick="go('p1')">رجوع</button>
     </div>
 </div>
 
-<!-- صفحة السر -->
 <div class="page" id="p3">
     <div class="box">
         <h2>🔐 كلمة السر</h2>
-        <input id="pass" placeholder="اكتبي كلمة السر">
+        <input id="pass" placeholder="اكتب كلمة السر">
         <button onclick="check()">دخول</button>
-        <button onclick="go('p2')">⬅ رجوع</button>
+        <button onclick="go('p2')">رجوع</button>
     </div>
 </div>
 
-<!-- الصفحة الخاصة -->
 <div class="page" id="p4">
     <div class="box">
         <h2>💖 رسالة خاصة</h2>
-        <p>(انتي حبي الحقيقي والشخص الذي لطالما كنت احلم به ان يكون بجانبي وهو الشخص الذي لطالما احتجته بجانبي كل شيء فيك جميل اخلاقك عقليتك وتفكيرك الذي يوالمني طيبتك وبياض قلبك الذي يفوق بياض ذالك الوجه جذاب وتلك العينين البنيتين اللتان تتحولان الا عسليتان بمجرد ظهور الشمس تلك العينيان الرائعتان اللتان تراني انا و انا فقط تجمعنا صفات مشتركة كثير وذلك الشيء اول الذي لاحظته بيننا احبك احبك واعشقك ياروحي وقلبي وحبيبتي احبك بكل شيء احبك بكل قوايي ومجهودي و دائما ابحث عن تقديم لك كل ما تحبينه وكل ما يفرحك وكل شيء استطيع ان اقدمه لك وهذا لشعرك بمذا قيمتك عندي ومدى حبي لك وتعويضا علا ما مررتي فيه من قبل احاول دائما شفاء تلك الجروح التي فيك من قبل دائما احاول تنفيس هم عنك لانني احب واحس بك دائما دائما احس بما تمرين به يا حبي اسعا دائما لتعويضك عن ما فات يا روحي احبك احبك ددائم ومحظوظ بك يا فتاتي محظوظ بفتات مثلك تحبني وتعشقني وتخاف عليا من كل شيء تعرف مكانتي ومدا اهميتي ودائما بجانبي احبك وانا سند لك وداءما في كتافك يا بنتي صغيرتي حبيبة قلبي دائما يا حبيبتي اهربي ولجءي الي في كل حالاتك حم فرح حزن غبنة ضيقة انا دائما ماواك وحتا ان كنا بيننا توتر فمن اجلك انسى كل شيء يا روحي انا دائما موجود بجانبك يا قلبي ان كان كل عالم ضدك فانا معك ضد عالم احبك واحبك واحححححبك يا بنتي صغيرتي لطالما كنتي بنتا صغيرتا في نظري وستظلين صغيرتا مهما كبرتي يابنتي احبك احبك واحبك واخاف عليكم من كل شيئ يا ايماني بنتي حبيبتي احببتك بقلبي قبل عيني احببت شخصيتك  قبل كل شيء احببت مظهرك داخلي قبل خارجي لطالما اردت ان اقدم لك كل ما تريدينه كل ما يخصك كل شيء كان نفسك  فيه اقدمه لك وحاول جاهدا ايصالك اليه   حب حنان اهتمام  استماع  تقدير   كل شيء يا حبيبتي لا احبذ ابدا ان ينقصك شيء معي يا روحي  لا احب اي يصيبك مكروه  يا روحي لانك قلبي  افقد ناس من اجلك ولكن لا افقدك هذا ما يهمني احب ان تشاركيني يومك اهتمامك ما تحبين ما تحلمين به ما يضرك كل تفصيلة صغيرة في يومك احب ان تشاركينها معي احب ان  استمع لك وانتي تسردين لي  شيء حصل لك عن شيء لامس قلبك شيء زعلك استمع لك بكل اهتمام وتركيز  انعزل عن العالم الذي حولي  واركز معك وما حكايتك وسردك لي احبك احبك يا قلبي  انتي عمري وحياتي وبنتي وكل شيء   كل يوم يزد حبي لك يوما يعد يوما دقيقتا بعد دقيقة ثانية بعد ثانية...... احبك احبك احب تلك الطريقة التي تسردين بها مشاعرك تجاهي مشاعرك التي تحسين بها يمكنني ان اظل اسمعك لايام  احب  طريقتك في خوف علي تشعرني وكانني شيء ثمين  لا يجب ان يحصل له شيء او حتا  ان يلمسه خدش اجي توصياتك ونصائحك التي تقدمينها الي النابع من قلب ومفعمة بخوفك علي احب تلك الطريقة التي تسمعين لي بها حين افرغ لك همي  التي تجعلني اشرع في كلام بدون توقف احب تلك ردات الفعل التي تعطينها لي النقية ال عفوية  الخالصة من صدق وحب  وخوف واهتمام بي احبها حيض انها تنسيني تنسييني في مشكلة التي كنت اسردها لك احب صدق  ونقائك احب ةكل شيء فيك حيث اراكي رقم وااحد اراك اجمل خلق الله لا ارى فتاتا بعد ياروحي تنسيني في كل جنس انثوي انا امتفيت بك تملئين كل شيء في عقلي قلبي عيني لا يمكنني ان ارا فتات اخرا  من غيرك يا حبي اراك انتي فوقهم جيمعا وتفوقينهم بسنين ضوئية يا حبي  .. احبك وسوف اظل احبك يا عمري انتي روحي وكل شيئ حفظك الله ورعاك يا عمري)
+
+        <p style="text-align:right;line-height:1.8;font-size:16px">
+
+انتي حبي الحقيقي والشخص الذي لطالما كنت احلم به ان يكون بجانبي وهو الشخص الذي لطالما احتجته بجانبي كل شيء فيك جميل اخلاقك عقليتك وتفكيرك الذي يوالمني طيبتك وبياض قلبك الذي يفوق بياض ذالك الوجه جذاب وتلك العينين البنيتين اللتان تتحولان الا عسليتان بمجرد ظهور الشمس تلك العينيان الرائعتان اللتان تراني انا و انا فقط تجمعنا صفات مشتركة كثير وذلك الشيء اول الذي لاحظته بيننا احبك احبك واعشقك ياروحي وقلبي وحبيبتي احبك بكل شيء احبك بكل قوايي ومجهودي و دائما ابحث عن تقديم لك كل ما تحبينه وكل ما يفرحك وكل شيء استطيع ان اقدمه لك وهذا لشعرك بمذا قيمتك عندي ومدى حبي لك وتعويضا علا ما مررتي فيه من قبل احاول دائما شفاء تلك الجروح التي فيك من قبل دائما احاول تنفيس هم عنك لانني احب واحس بك دائما دائما احس بما تمرين به يا حبي اسعا دائما لتعويضك عن ما فات يا روحي احبك احبك ددائم ومحظوظ بك يا فتاتي محظوظ بفتات مثلك تحبني وتعشقني وتخاف عليا من كل شيء تعرف مكانتي ومدا اهميتي ودائما بجانبي احبك وانا سند لك وداءما في كتافك يا بنتي صغيرتي حبيبة قلبي دائما يا حبيبتي اهربي ولجءي الي في كل حالاتك حم فرح حزن غبنة ضيقة انا دائما ماواك وحتا ان كنا بيننا توتر فمن اجل انسى كل شيء يا روحي انا دائما موجود بجانبك يا قلبي ان كان كل عالم ضدك فانا معك ضد عالم احبك واحبك واحححححبك يا بنتي صغيرتي لطالما كنتي بنتا صغيرتا في نظري وستظلين صغيرتا مهما كبرتي يابنتي احبك احبك واحبك واخاف عليكم من كل شيئ يا ايماني بنتي حبيبتي احببتك بقلبي قبل عيني احببت شخصيتك قبل كل شيء احببت مظهرك داخلي قبل خارجي لطالما اردت ان اقدم لك كل ما تريدينه كل ما يخصك كل شيء كان نفسك فيه اقدمه لك وحاول جاهدا ايصالك اليه حب حنان اهتمام استماع تقدير كل شيء يا حبيبتي لا احبذ ابدا ان ينقصك شيء معي يا روحي لا احب اي يصيبك مكروه يا روحي لانك قلبي افقد ناس من اجلك ولكن لا افقدك هذا ما يهمني احب ان تشاركيني يومك اهتمامك ما تحبين ما تحلمين به ما يضرك كل تفصيلة صغيرة في يومك احب ان تشاركينها معي احب ان استمع لك وانتي تسردين لي شيء حصل لك عن شيء لامس قلبك شيء زعلك استمع لك بكل اهتمام وتركيز انعزل عن العالم الذي حولي واركز معك وما حكايتك وسردك لي احبك احبك يا قلبي انتي عمري وحياتي وبنتي وكل شيء كل يوم يزد حبي لك يوما يعد يوما دقيقتا بعد دقيقة ثانية بعد ثانية احبك احبك احب تلك الطريقة التي تسردين بها مشاعرك تجاهي مشاعرك التي تحسين بها يمكنني ان اظل اسمعك لايام احب طريقتك في خوف علي تشعرني وكانني شيء ثمين لا يجب ان يحصل له شيء او حتا ان يلمسه خدش احب نصائحك التي تقدمينها الي النابع من قلب ومفعمة بخوفك علي احب تلك الطريقة التي تسمعين لي بها حين افرغ لك همي التي تجعلني اشرع في كلام بدون توقف احب تلك ردات الفعل التي تعطينها لي النقية العفوية الخالصة من صدق وحب وخوف واهتمام بي احبها حيض انها تنسيني تنسيني في مشكلة التي كنت اسردها لك احب صدق ونقائك احب كل شيء فيك حيث اراكي رقم واحد اراك اجمل خلق الله لا ارى فتاتا بعدك يا روحي تنسيني في كل جنس انثوي انا امتفيت بك تملئين كل شيء في عقلي قلبي عيني لا يمكنني ان ارى فتاة اخرى من غيرك يا حبي اراك انتي فوقهم جميعا وتفوقينهم بسنين ضوئية يا حبي احبك وسوف اظل احبك يا عمري انتي روحي وكل شيء حفظك الله ورعاك يا عمري
+
         </p>
-        <button onclick="go('p2')">⬅ رجوع</button>
+
+        <button onclick="go('p2')">رجوع</button>
     </div>
 </div>
 
-<!-- صفحة الصوت -->
 <div class="page" id="p5">
     <div class="box">
         <h2>🎧 رسالة صوتية</h2>
 
         <audio controls style="width:90%;">
-            <source src="voice.m4a" type="audio/mp4">
-            متصفحك لا يدعم الصوت
+            <source src="voice.mp3" type="audio/mpeg">
         </audio>
 
-        <br><br>
+        <br>
+
         <button onclick="go('p2')">⬅ رجوع</button>
     </div>
 </div>
 
 <script>
-let messages=["أحبك جدًا 💖","أنتِ روحي ❤️","أنتِ عالمي 💕","أشتاق إليك 💞","أنتِ أجمل شيء في حياتي 💖"];
+let music=document.getElementById("bgMusic");
+let isPlaying=false;
+
+function toggleMusic(){
+    if(!isPlaying){
+        music.play();
+        isPlaying=true;
+        document.getElementById("musicBtn").innerText="⏸ إيقاف";
+    }else{
+        music.pause();
+        isPlaying=false;
+        document.getElementById("musicBtn").innerText="🎵 تشغيل الموسيقى";
+    }
+}
 
 function go(id){
     document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
     document.getElementById(id).classList.add("active");
 }
 
-function love(){
-    let msg=document.getElementById("msg");
-    msg.innerText=messages[Math.floor(Math.random()*messages.length)];
-    burst();
-}
-
 function check(){
     let v=document.getElementById("pass").value;
-    if(v==="إيمان"){go("p4");}
-    else{alert("❌ كلمة السر غير صحيحة");}
+    if(v==="إيمان") go("p4");
+    else alert("خطأ ❌");
 }
 
-function createHeart(){
-    let h=document.createElement("div");
-    h.className="heart";
-    h.innerHTML="💖";
-    h.style.left=Math.random()*100+"vw";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-}
+let romanticMessages = [
+    "أنتِ أجمل شيء في حياتي 💖",
+    "أحبك أكثر من أي شيء ❤️",
+    "وجودك يسعد قلبي دائمًا 💕",
+    "أنتِ سبب ابتسامتي 😍",
+    "كل يوم أحبك أكثر 💘",
+    "لا أحد يشبهك في قلبي 🌹",
+    "أنتِ روحي يا إيمان 💞",
+    "أنتِ عالمي الجميل 💖"
+];
 
-function burst(){
-    for(let i=0;i<20;i++){
-        setTimeout(createHeart,i*20);
-    }
-}
+let lastIndex = -1;
 
-setInterval(createHeart,500);
+function showRomantic(){
+    let index;
+    do {
+        index = Math.floor(Math.random() * romanticMessages.length);
+    } while(index === lastIndex);
+
+    lastIndex = index;
+
+    document.getElementById("romanticText").innerText = romanticMessages[index];
+}
 </script>
 
 </body>
