@@ -19,7 +19,6 @@ body{
     position:relative;
 }
 
-/* الطبقة الأولى من القلوب (كثيفة) */
 body::before{
     content:"💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗 💖 💕 💗";
     position:absolute;
@@ -33,7 +32,6 @@ body::before{
     pointer-events:none;
 }
 
-/* الطبقة الثانية (أبطأ + أكبر) */
 body::after{
     content:"💕 💖 💗 💕 💖 💗 💕 💖 💗 💕 💖 💗 💕 💖 💗 💕 💖 💗";
     position:absolute;
@@ -53,13 +51,11 @@ body::after{
     100%{background-position:0% 50%}
 }
 
-/* حركة القلوب السريعة */
 @keyframes floatUp{
     0%{transform:translateY(100%)}
     100%{transform:translateY(-100%)}
 }
 
-/* حركة القلوب البطيئة */
 @keyframes floatUpSlow{
     0%{transform:translateY(100%)}
     100%{transform:translateY(-120%)}
@@ -110,7 +106,7 @@ button{
 <body>
 
 <audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
+    <source src="./music.mp3" type="audio/mpeg">
 </audio>
 
 <button id="musicBtn" onclick="toggleMusic()">🎵 تشغيل الموسيقى</button>
@@ -165,7 +161,7 @@ button{
         <h2>🎧 رسالة صوتية</h2>
 
         <audio controls style="width:90%;">
-            <source src="voice.mp3" type="audio/mpeg">
+            <source src="./voice.mp3" type="audio/mpeg">
         </audio>
 
         <br>
